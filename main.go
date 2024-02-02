@@ -8,6 +8,8 @@ import (
 	"time"
 
 	"github.com/joho/godotenv"
+	"github.com/mazufik/BUILD-REST-API-WITH-GOLANG-USING-PRISMA-ORM/config"
+	"github.com/mazufik/BUILD-REST-API-WITH-GOLANG-USING-PRISMA-ORM/helper"
 )
 
 func main() {
@@ -16,6 +18,12 @@ func main() {
 		log.Fatal("Could not load environment variables", err)
 	}
 	fmt.Printf("Start Server " + os.Getenv("PORT") + "\n")
+
+	// Handle DB Connection
+	db, err := config.ConnectDB()
+	helper.ErrorPanic(err)
+
+	defer db.Prisma.Disconnect()
 
 	server := &http.Server{
 		Addr:           ":" + os.Getenv("PORT"),
